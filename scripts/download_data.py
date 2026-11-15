@@ -41,10 +41,11 @@ RAW_PATTERN = "hirise_gale/raw/*"
 
 
 def human(n: float) -> str:
+    """Decimal units (1 MB = 1,000,000 bytes), as Hugging Face shows file sizes."""
     for unit in ("B", "KB", "MB", "GB"):
-        if n < 1024 or unit == "GB":
+        if n < 1000 or unit == "GB":
             return f"{n:.1f} {unit}" if unit != "B" else f"{int(n)} B"
-        n /= 1024
+        n /= 1000
     return f"{n:.1f} GB"
 
 

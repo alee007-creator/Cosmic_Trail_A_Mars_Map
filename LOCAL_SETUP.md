@@ -253,10 +253,11 @@ npm ci
 `npm ci` installs the exact versions recorded in `package-lock.json` into
 `frontend/node_modules/` (`npm install` also works). It takes one to a few minutes; Cesium is large.
 
-> **Warning about "install scripts blocked … esbuild"?** Newer npm versions block package
-> install scripts by default, including the one that sets up **esbuild** (Vite's bundler).
-> If you see that warning, or `npm run dev` later fails with an esbuild error, run this once
-> inside `frontend/`:
+> **Warning "install scripts blocked … esbuild@… (postinstall: node install.js)"?** Newer npm
+> versions block package install scripts by default. On its own this warning is **harmless**:
+> esbuild (Vite's bundler) gets its program from a separate platform package that npm installs
+> anyway. Only if `npm run dev` later fails with an **esbuild** error, run this once inside
+> `frontend/` and start again:
 > ```bash
 > node node_modules/esbuild/install.js
 > ```
@@ -319,16 +320,16 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 
 (`PYTHONUTF8=1` makes Python print Unicode safely in the Windows console; macOS and Linux don't need it.)
 
-Wait for:
+Wait until you see these lines (the order can vary):
 ```
-[COSMIC TRAIL] Loaded dataset: hirise_gale (kind=real_hirise)
-[COSMIC TRAIL] Loaded dataset: synthetic_demo (kind=synthetic_demo)
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+[COSMIC TRAIL] Loaded dataset: hirise_gale (kind=real_hirise)
+[COSMIC TRAIL] Loaded dataset: synthetic_demo (kind=synthetic_demo)
 ```
 
-The **first** start can take 10–30 seconds: the route search is compiled to native code and the
-compiled result is cached in `app/__pycache__/`, so later starts are quicker.
+The **first** start takes a little longer: the route search is compiled to native code, and the
+result is cached in `app/__pycache__/` so later starts are quicker.
 
 > Port 8000 is the **API only**. Opening http://127.0.0.1:8000 in the browser does not show
 > the app (you'll get a blank page); use port 5173 below.
@@ -404,8 +405,10 @@ npm run dev -- --host 127.0.0.1
 
 Then open http://127.0.0.1:5173.
 
-**A server is still running after you closed its terminal?** The next start then fails with
-"address already in use" (see section 10). Find and stop the process holding the port:
+**A server is still running after you closed its terminal?** This happens fairly often with the
+frontend on Windows: Vite's `node` process can outlive its terminal. The next start then fails
+with "address already in use" / "Port 5173 is already in use" (see section 10). Find and stop
+the process holding the port:
 
 | System | Find | Stop |
 |--------|------|------|
@@ -424,7 +427,7 @@ With the venv active, from the repo root:
 python -m pytest tests -q
 ```
 
-With the data from step 3 in place, all tests should pass (about 190). Tests that need the real
+With the data from step 3 in place, all tests should pass (189 at the time of writing). Tests that need the real
 HiRISE data are **skipped** (not failed) when `data/hirise_gale/` is missing. The backend does
 not need to be running.
 
@@ -470,7 +473,7 @@ Then restart both servers (section 7).
 | `checksum MISMATCH` | interrupted or corrupted download | Delete that file and run `python scripts/download_data.py` again |
 | `npm ci` prints `EBADENGINE` warnings / "Unsupported engine", or the app fails with Cesium errors | Node.js older than 22 | Install Node.js 22+ (`node --version`), delete `frontend/node_modules`, run `npm ci` again |
 | `'vite' is not recognized` / `vite: command not found` | frontend packages not installed | `cd frontend` then `npm ci` |
-| esbuild error when running `npm run dev` / "install scripts blocked" | npm blocked esbuild's install script | In `frontend/`: `node node_modules/esbuild/install.js` |
+| `npm run dev` fails with an **esbuild** error | npm blocked esbuild's install script (the warning alone is harmless) | In `frontend/`: `node node_modules/esbuild/install.js`, then `npm run dev` again |
 | Backend: `[Errno 10048]` (Windows) / `[Errno 48]` (macOS) / `[Errno 98]` (Linux) "address already in use" | port 8000 taken (often an old backend) | Stop the old process (section 7), or use another port, e.g. `--port 8001`, **and** change `frontend/.env.local` to match, then restart the frontend |
 | Frontend: `Port 5173 is already in use` | another Vite still running (the app uses a fixed port) | Stop the old `node` process (section 7) |
 | "Backend not reachable at localhost:8000" error in the app | backend not running, or frontend can't reach it | Start the backend (Terminal 1); check `frontend/.env.local` contains `VITE_API_BASE=http://127.0.0.1:8000`; **restart the frontend** after creating or editing `.env.local` |
