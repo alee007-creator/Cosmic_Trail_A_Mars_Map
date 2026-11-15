@@ -1,3 +1,5 @@
 node_modules/
 dist/
 *.tsbuildinfo
+# local settings (e.g. VITE_API_BASE in .env.local)
+*.local

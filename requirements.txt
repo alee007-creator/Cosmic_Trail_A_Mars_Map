@@ -1,6 +1,7 @@
 # COSMIC TRAIL — Python dependencies
 # Install with:  pip install -r requirements.txt
-# Tested on Python 3.11, 3.12, 3.13
+# Tested on Python 3.11, 3.12, 3.13, 3.14
+# Full setup (incl. the Node.js frontend and the Hugging Face data): LOCAL_SETUP.md
 
 fastapi==0.115.6
 uvicorn[standard]==0.32.1
@@ -9,10 +10,11 @@ rasterio>=1.3,<2
 Pillow>=10,<13
 pyproj>=3.6,<4
 numba>=0.60             # compiles the A* route search (~100x faster); optional, falls back to pure Python
+huggingface_hub>=0.24   # scripts/download_data.py — fetches data/ from Hugging Face
 httpx>=0.27,<1          # optional — only needed to run tests
 pytest>=8,<9            # optional — dev
 pytest-asyncio>=0.23    # optional — dev
 
-# No Node.js or npm required.
-# OpenLayers 10.11.0 (BSD-2-Clause) is bundled under frontend/static/ol/
-# data in hugging face
+# The frontend (frontend/, React + Vite + Cesium) needs Node.js 18+ and npm — see LOCAL_SETUP.md.
+# OpenLayers 10.11.0 (BSD-2-Clause) is bundled under frontend/static/ol/ (legacy page).
+# Data is not in Git: download it with  python scripts/download_data.py  (Hugging Face).

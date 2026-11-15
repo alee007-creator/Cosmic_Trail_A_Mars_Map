@@ -1,5 +1,11 @@
 # COSMIC TRAIL — Beginner Setup Guide (Windows)
 
+> ⚠️ **Outdated — use [LOCAL_SETUP.md](LOCAL_SETUP.md) instead.**
+> This page describes an older version of the app (OpenLayers page served on port 8000,
+> no Node.js). The current app has a React/Vite frontend that needs **Node.js 22+**, runs at
+> **http://127.0.0.1:5173**, and downloads its data from Hugging Face with
+> `python scripts/download_data.py`. It is kept here for reference only.
+
 This guide walks you through every step from a fresh Windows machine.  
 You do **not** need Node.js, npm, or any other tools beyond Python.
 

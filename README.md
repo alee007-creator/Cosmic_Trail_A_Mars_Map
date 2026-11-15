@@ -1,6 +1,3 @@
-cd "D:\NASA project\Cosmic_Trail_A_Mars_Map"
-
-@'
 # 🚀 COSMIC TRAIL — Offline Marswalk Planner
 
 **Team CosmiCore · NASA Space Apps 2026**  
@@ -44,7 +41,7 @@ You can explore Mars on an interactive 3D globe, switch between ground height an
 Follow these steps during a live demo to see how COSMIC TRAIL works:
 
 1. **Explore the 3D Mars Globe:**
-   Open the app at `http://localhost:5173`. Rotate the 3D Mars globe and zoom into **Gale Crater** (where NASA's Curiosity rover landed). Adjust the **vertical exaggeration slider (1×–5×)** to clearly see the height of the crater walls and Mount Sharp.
+   Open the app at `http://127.0.0.1:5173`. Rotate the 3D Mars globe and zoom into **Gale Crater** (where NASA's Curiosity rover landed). Adjust the **vertical exaggeration slider (1×–5×)** to clearly see the height of the crater walls and Mount Sharp.
 2. **Turn On Map Layers:**
    Switch between the **Elevation**, **Slope**, and **Hillshade** layers to spot flat landing areas versus steep, risky slopes. Toggle on the **Minerals Layer** and **Curiosity Proposed Path** to see real NASA science targets nearby.
 3. **Pick Start and End Points:**
@@ -61,13 +58,42 @@ Follow these steps during a live demo to see how COSMIC TRAIL works:
 
 ---
 
-## Quick Start (teammates)
+## Quick Start
 
-You need **Git**, **Python 3.11+** and **Node.js 18+**. The code is on GitHub; the
-data (about 236 MB) is on Hugging Face because it is too large for Git.
+📖 **Full step-by-step guide for Windows, macOS and Linux, with checks and troubleshooting:
+[LOCAL_SETUP.md](LOCAL_SETUP.md).**
 
-### 1. Clone the repo
+You need **Git**, **Python 3.11–3.14** and **Node.js 22+**. The code is on GitHub; the
+data (about 236 MB) is on [Hugging Face](https://huggingface.co/datasets/irhabatool/cosmic-trail-data)
+because it is too large for Git.
 
 ```bash
-git clone [https://github.com/IB-Mustafa/Cosmic_Trail_A_Mars_Map.git](https://github.com/IB-Mustafa/Cosmic_Trail_A_Mars_Map.git)
+# 1. Code
+git clone https://github.com/IB-Mustafa/Cosmic_Trail_A_Mars_Map.git
 cd Cosmic_Trail_A_Mars_Map
+
+# 2. Backend packages (activate on Windows: .venv\Scripts\activate)
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# 3. Data from Hugging Face (~236 MB, checksum-verified)
+python scripts/download_data.py
+
+# 4. Frontend packages + backend address
+cd frontend
+npm ci
+echo "VITE_API_BASE=http://127.0.0.1:8000" > .env.local
+cd ..
+```
+
+Then run the two servers in two terminals:
+
+```bash
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000   # terminal 1 (repo root, venv active)
+cd frontend && npm run dev -- --host 127.0.0.1                # terminal 2
+```
+
+and open **http://127.0.0.1:5173**. On Windows, run `$env:PYTHONUTF8 = "1"` (PowerShell) before
+the backend; see [LOCAL_SETUP.md](LOCAL_SETUP.md) for the Windows commands and for fixes to
+common problems.
